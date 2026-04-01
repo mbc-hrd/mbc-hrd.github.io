@@ -22,21 +22,41 @@
         }
 
         :root {
+            /* Palette: Premium White/Grey */
             --bg-primary: #f8f9fa;
             --bg-secondary: #ffffff;
-            --bg-card: rgba(0, 0, 0, 0.03);
+            --bg-card: rgba(255, 255, 255, 0.6);
             --text-primary: #1d1d1f;
             --text-secondary: #6e6e73;
             --text-muted: #86868b;
+
+            /* Accents */
             --accent-1: #6c5ce7;
             --accent-2: #5849c4;
             --accent-3: #fd79a8;
             --accent-4: #00b894;
+
+            /* Gradients */
             --gradient-1: linear-gradient(135deg, #6c5ce7, #a29bfe, #fd79a8);
             --gradient-2: linear-gradient(135deg, #00cec9, #6c5ce7);
-            --border-color: rgba(0, 0, 0, 0.1);
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(0, 0, 0, 0.08);
+            --mesh-gradient: radial-gradient(at 0% 0%, rgba(108, 92, 231, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(253, 121, 168, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 184, 148, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(162, 155, 254, 0.15) 0px, transparent 50%);
+
+            /* Borders & Shadows */
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.1);
+
+            /* Typography Scaling */
+            --fs-display: clamp(2.5rem, 6vw, 4.5rem);
+            --fs-h1: clamp(2rem, 4vw, 2.8rem);
+            --fs-h2: 1.5rem;
+            --fs-body: 1.05rem;
+            --fs-caption: 0.85rem;
         }
 
         html {
@@ -46,9 +66,25 @@
         body {
             font-family: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
             background-color: var(--bg-primary);
+            background-image: var(--mesh-gradient);
+            background-attachment: fixed;
             color: var(--text-primary);
             line-height: 1.7;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/60-lines.png');
+            opacity: 0.03;
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* ===== Animated Background ===== */
@@ -121,18 +157,28 @@
         /* ===== Navigation ===== */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 48px);
+            max-width: 1200px;
             z-index: 1000;
-            padding: 20px 40px;
+            padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             backdrop-filter: blur(20px);
-            background: rgba(248, 249, 250, 0.8);
-            border-bottom: 2px solid var(--border-color);
-            transition: all 0.3s ease;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        nav.scrolled {
+            top: 12px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.85);
         }
 
         .nav-logo {
@@ -236,19 +282,31 @@
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: var(--fs-display);
             font-weight: 900;
             line-height: 1.1;
             letter-spacing: -2px;
             margin-bottom: 24px;
-            animation: fadeInUp 0.8s ease 0.1s both;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
         }
 
         .hero h1 .gradient-text {
             background: var(--gradient-1);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: gradientMove 5s ease infinite alternate;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
         }
 
         .hero p {
@@ -285,19 +343,52 @@
 
         .btn-primary {
             background: var(--gradient-1);
+            background-size: 200% auto;
             color: white;
             box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            transform: rotate(45deg);
+            transition: 0.5s;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+                top: -100%;
+            }
+
+            100% {
+                left: 100%;
+                top: 100%;
+            }
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(108, 92, 231, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(108, 92, 231, 0.4);
+            background-position: right center;
         }
 
         .btn-secondary {
             background: var(--glass-bg);
             color: var(--text-primary);
             border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
@@ -350,30 +441,20 @@
 
         .skill-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 36px 32px;
-            transition: all 0.4s ease;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
-        }
-
-        .skill-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--gradient-1);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(10px);
         }
 
         .skill-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(108, 92, 231, 0.3);
-            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-1);
+            box-shadow: var(--card-shadow-hover);
         }
 
         .skill-card:hover::before {
@@ -442,24 +523,36 @@
         }
 
         .project-card {
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            transition: all 0.4s ease;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
         }
 
         .project-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(108, 92, 231, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(-12px);
+            box-shadow: var(--card-shadow-hover);
         }
 
         .project-thumbnail {
             width: 100%;
-            height: 220px;
+            height: 240px;
             position: relative;
             overflow: hidden;
+        }
+
+        .project-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-card:hover .project-thumbnail img {
+            transform: scale(1.1);
         }
 
         .project-thumbnail-bg {
@@ -604,7 +697,36 @@
             text-decoration: none;
         }
 
+        /* ===== Mobile Menu Toggle ===== */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 8px;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            display: block;
+        }
+
         /* ===== Animations ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -617,66 +739,81 @@
             }
         }
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ===== Responsive ===== */
+        /* ===== Responsive & Mobile Menu ===== */
         @media (max-width: 768px) {
             nav {
-                padding: 16px 20px;
+                top: 12px;
+                width: calc(100% - 24px);
+                padding: 12px 20px;
+            }
+
+            .menu-toggle {
+                display: flex;
             }
 
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 32px;
+                transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+                z-index: 1000;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
             }
 
             section {
-                padding: 60px 20px;
+                padding: 80px 24px;
             }
 
             .hero {
-                padding: 100px 20px 60px;
+                padding-top: 140px;
             }
 
             .hero h1 {
-                letter-spacing: -1px;
+                font-size: 2.8rem;
             }
 
             .projects-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .contact-card {
-                padding: 32px 24px;
-            }
-
-            .contact-links {
-                flex-direction: column;
-                align-items: center;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Animated Background Orbs -->
-    <div class="bg-gradient-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
 
-    <!-- Navigation -->
     <nav>
         <div class="nav-logo">Portfolio.</div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <ul class="nav-links">
             <li><a href="#home">홈</a></li>
             <li><a href="#skills">스킬</a></li>
@@ -689,7 +826,6 @@
         <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-content">
-
                 <h1>
                     안녕하세요,<br>
                     <span class="gradient-text">크리에이티브 엔지니어</span><br>
@@ -712,13 +848,13 @@
 
         <!-- Skills Section -->
         <section id="skills">
-            <div class="section-header fade-in">
+            <div class="section-header">
                 <span class="section-label">Skills</span>
                 <h2 class="section-title">제가 잘하는 것들</h2>
                 <p class="section-desc">다양한 기술 스택을 활용하여 완성도 높은 결과물을 만듭니다</p>
             </div>
             <div class="skills-grid">
-                <div class="skill-card fade-in">
+                <div class="skill-card">
                     <div class="skill-icon purple">🎨</div>
                     <h3>UI/UX 디자인</h3>
                     <p>사용자 중심의 직관적인 인터페이스를 설계하고, 시각적으로 아름다운 디자인을 구현합니다.</p>
@@ -728,7 +864,7 @@
                         <span class="skill-tag">Prototyping</span>
                     </div>
                 </div>
-                <div class="skill-card fade-in">
+                <div class="skill-card">
                     <div class="skill-icon pink">💻</div>
                     <h3>프론트엔드 개발</h3>
                     <p>최신 웹 기술을 활용하여 반응형이고 인터랙티브한 웹 애플리케이션을 개발합니다.</p>
@@ -738,7 +874,7 @@
                         <span class="skill-tag">React</span>
                     </div>
                 </div>
-                <div class="skill-card fade-in">
+                <div class="skill-card">
                     <div class="skill-icon teal">🤖</div>
                     <h3>AI 활용</h3>
                     <p>AI 도구를 활용하여 업무 효율을 높이고, 창의적인 문제 해결 방식을 제안합니다.</p>
@@ -753,7 +889,7 @@
 
         <!-- Stats Section -->
         <section class="stats-section">
-            <div class="stats-grid fade-in">
+            <div class="stats-grid">
                 <div class="stat-item">
                     <h3>3+</h3>
                     <p>프로젝트 완료</p>
@@ -771,13 +907,13 @@
 
         <!-- Projects Section -->
         <section id="projects">
-            <div class="section-header fade-in">
+            <div class="section-header">
                 <span class="section-label">Projects</span>
                 <h2 class="section-title">최근 프로젝트</h2>
                 <p class="section-desc">직접 기획하고 개발한 프로젝트들입니다</p>
             </div>
             <div class="projects-grid">
-                <div class="project-card fade-in">
+                <div class="project-card">
                     <div class="project-thumbnail">
                         <div class="project-thumbnail-bg thumb-1">🛒</div>
                     </div>
@@ -787,7 +923,7 @@
                         <a href="#" class="project-link">자세히 보기 →</a>
                     </div>
                 </div>
-                <div class="project-card fade-in">
+                <div class="project-card">
                     <div class="project-thumbnail">
                         <div class="project-thumbnail-bg thumb-2">📊</div>
                     </div>
@@ -797,7 +933,7 @@
                         <a href="#" class="project-link">자세히 보기 →</a>
                     </div>
                 </div>
-                <div class="project-card fade-in">
+                <div class="project-card">
                     <div class="project-thumbnail">
                         <div class="project-thumbnail-bg thumb-3">💬</div>
                     </div>
@@ -812,12 +948,12 @@
 
         <!-- Contact Section -->
         <section id="contact">
-            <div class="section-header fade-in">
+            <div class="section-header">
                 <span class="section-label">Contact</span>
                 <h2 class="section-title">함께 일해요</h2>
                 <p class="section-desc">새로운 기회와 협업을 기다리고 있습니다</p>
             </div>
-            <div class="contact-wrapper fade-in">
+            <div class="contact-wrapper">
                 <div class="contact-card">
                     <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 8px;">
                         언제든 편하게 연락주세요 ✉️
@@ -847,31 +983,91 @@
     </div>
 
     <script>
-        // ===== Scroll Fade-in Animation =====
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // ===== Smooth Nav Background on Scroll =====
+        // Scroll Progress Bar
         window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (height === 0) ? 0 : (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        });
+
+        // Navigation Scroll Effect
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-                nav.style.background = 'rgba(10, 10, 15, 0.9)';
+                nav.classList.add('scrolled');
             } else {
-                nav.style.background = 'rgba(10, 10, 15, 0.7)';
+                nav.classList.remove('scrolled');
             }
         });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Scroll Reveal Animation
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section, .skill-card, .project-card, .contact-card').forEach(el => {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        });
+
+        // Stats Counter Animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const originalText = target.innerText;
+                    const numericValue = parseInt(originalText.replace(/[^0-9]/g, ''));
+
+                    if (isNaN(numericValue)) return;
+
+                    let current = 0;
+                    const duration = 2000;
+                    const startTime = performance.now();
+
+                    const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+
+                        // Ease out quad
+                        const easeProgress = 1 - (1 - progress) * (1 - progress);
+
+                        target.innerText = Math.floor(easeProgress * numericValue) + originalText.replace(/[0-9]/g, '');
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            target.innerText = originalText;
+                        }
+                    };
+                    requestAnimationFrame(animate);
+                    statsObserver.unobserve(target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-item h3').forEach(stat => statsObserver.observe(stat));
     </script>
 </body>
 
